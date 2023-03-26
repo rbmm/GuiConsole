@@ -4,6 +4,7 @@
 _NT_BEGIN
 
 #include "console.h"
+#include "GuiLog.h"
 
 typedef struct CONSOLE_STATE_INFO {
     /* BEGIN V1 CONSOLE_STATE_INFO */
@@ -129,27 +130,27 @@ NTSTATUS GetRegSZ(_In_ HANDLE hKey,
 	return STATUS_SUCCESS;
 }
 
+static const COLORREF _S_ColorTable[] = {
+	0x00000000,
+	0x00A50000,
+	0x00549B5A,
+	0x00808000,
+	0x003755B1,
+	0x008E17DF,
+	0x00008080,
+	0x00C0C0C0,
+	0x00808080,
+	0x00FF9600,
+	0x0000FF00,
+	0x00FFFF00,
+	0x000000FF,
+	0x00FF00FF,
+	0x0000FFFF,
+	0x00FFFFFF,
+};
+
 COLORREF GetColor(HKEY hKey, ULONG i)
 {
-	static const COLORREF _S_ColorTable[] = {
-		0x00000000,
-		0x00A50000,
-		0x00549B5A,
-		0x00808000,
-		0x003755B1,
-		0x008E17DF,
-		0x00008080,
-		0x00C0C0C0,
-		0x00808080,
-		0x00FF9600,
-		0x0000FF00,
-		0x00FFFF00,
-		0x000000FF,
-		0x00FF00FF,
-		0x0000FFFF,
-		0x00FFFFFF,
-	};
-
 	COLORREF color = _S_ColorTable[i & (_countof(_S_ColorTable) - 1)];
 	
 	WCHAR buf[32];
@@ -288,8 +289,9 @@ void ConsoleWnd::SetDefaults(HWND hwnd)
 
 			StateInfo.hWnd = hwnd;
 			StateInfo.hIcon = _M_hii[0];
-			StateInfo.OriginalTitle = const_cast<PWSTR>(L"OriginalTitle");
-			StateInfo.Defaults = TRUE;
+			StateInfo.OriginalTitle = const_cast<PWSTR>(GetWindowName());
+			StateInfo.fIsV2Console = TRUE;
+			memcpy(StateInfo.ColorTable, _S_ColorTable, sizeof(_S_ColorTable));
 
 			StateInfo.ScreenAttributes = (USHORT)_M_ScreenAttributes;
 			InitFontInfo(&StateInfo, _M_hFont);

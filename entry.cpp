@@ -191,7 +191,8 @@ void CALLBACK ep(void*)
 
 			if (hwnd)
 			{
-				if (ep_work(hwnd))
+				void* Context;
+				if (BeginML(hwnd, &Context))
 				{
 					ShowWindow(hwnd, SW_SHOW);
 					MSG msg;
@@ -200,6 +201,7 @@ void CALLBACK ep(void*)
 						TranslateMessage(&msg);
 						DispatchMessageW(&msg);
 					}
+					EndML(Context);
 				}
 				else
 				{

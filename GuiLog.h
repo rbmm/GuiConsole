@@ -6,4 +6,6 @@ PCWSTR WINAPI GetIconName();
 
 HINSTANCE WINAPI GetIconModule();
 
-BOOL WINAPI ep_work(_In_ HWND hwnd);
+BOOL WINAPI BeginML(_In_ HWND hwnd, _Out_ void** pContext);
+
+void WINAPI EndML(_In_ void* Context);
